@@ -1,0 +1,74 @@
+<div class="container m-auto d-flex" id="bar">
+  <div class="container-fluid left" id="left-button">
+    <a class="nav-link" (click)="logvalue()">Login</a>
+  </div>
+  <div class="container-fluid right" id="right-button">
+    <a class="nav-link" (click)="signvalue()">Signup</a>
+  </div>
+</div>
+
+<!-- Login Form -->
+<div *ngIf="temp === 'login'; else signupTemplate" class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-sm p-4" style="width: 350px;">
+    <h3 class="text-center mb-4">Login</h3>
+
+    <form [formGroup]="loginform" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="username" class="form-label">UserName</label>
+        <input type="text" id="username" class="form-control" placeholder="Enter name" formControlName="username">
+        <div class="text-danger mt-1" *ngIf="loginform.get('username')?.invalid && loginform.get('username')?.touched">
+          Please enter a valid name.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter email" formControlName="email">
+        <div class="text-danger mt-1" *ngIf="loginform.get('email')?.invalid && loginform.get('email')?.touched">
+          Please enter a valid email.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Enter password" formControlName="password">
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" [disabled]="loginform.invalid">Login</button>
+    </form>
+  </div>
+</div>
+
+<!-- Signup Form -->
+<ng-template #signupTemplate>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-sm p-4" style="width: 350px;">
+      <h3 class="text-center mb-4">Signup</h3>
+
+      <form [formGroup]="loginform" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="username" class="form-label">UserName</label>
+          <input type="text" id="username" class="form-control" placeholder="Enter name" formControlName="username">
+          <div class="text-danger mt-1" *ngIf="loginform.get('username')?.invalid && loginform.get('username')?.touched">
+            Please enter a valid name.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" id="email" class="form-control" placeholder="Enter email" formControlName="email">
+          <div class="text-danger mt-1" *ngIf="loginform.get('email')?.invalid && loginform.get('email')?.touched">
+            Please enter a valid email.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Enter password" formControlName="password">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="loginform.invalid">Signup</button>
+      </form>
+    </div>
+  </div>
+</ng-template>

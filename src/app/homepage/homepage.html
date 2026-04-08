@@ -1,0 +1,46 @@
+<!-- User greeting or login -->
+ <div class="container d-flex ms-auto">
+    <div *ngIf="isUserLogged; else loginTemplate">
+    <h3>Welcome, {{username}}</h3>
+    &nbsp;
+    <a class="btn btn-danger" (click)="logout()">Logout</a>
+    </div>
+    <form class="d-flex ms-auto" (ngSubmit)="filterProducts()">
+        <input type="text" class="form-control-palaintext" [(ngModel)]="searchInput" name="search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+ </div>
+
+
+<ng-template #loginTemplate>
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse show d-flex">
+      <h3>Login for Better Experience</h3>
+      &nbsp;
+      <a class="btn btn-success" routerLink="/loginpage">Login or Signup</a>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Products -->
+<div class="container my-4" *ngIf="filteredProds; else loadingTemplate">
+  <div class="row">
+    <div class="col-md-4 mb-4 f-white" *ngFor="let prod of filteredProds">
+      <div class="card h-100 shadow-sm custom-container">
+        <img [src]="prod.image" class="card-img-top" [alt]="prod.name" style="height: 70px;">
+        <div class="card-body">
+          <h5 class="card-title">{{ prod.name }}</h5>
+          <p class="card-text text-success fw-bold">₹{{ prod.price }}</p>
+          <p class="card-text">{{ prod.description }}</p>
+          <p class="card-text">{{ prod.brand }}</p>
+          <p class="card-text">{{ prod.rating }}</p>
+          <button class="btn btn-success" (click)="addcart(prod)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <span>Loading items...</span>
+</ng-template>

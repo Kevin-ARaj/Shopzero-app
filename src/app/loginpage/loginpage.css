@@ -1,0 +1,18 @@
+#bar{
+    text-align: center;
+    width:50vw;
+    padding-top : 10px;
+}
+#left-button{
+    justify-content: center;
+    background-color: burlywood;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    color:aliceblue;
+}
+#right-button{
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: burlywood;
+    color:aliceblue;
+}

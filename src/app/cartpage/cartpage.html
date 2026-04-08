@@ -1,0 +1,39 @@
+<div class="container m-3">
+  <div class="container-fluid" id="one">Items:
+    <hr>
+    <div class="container-item" *ngFor="let item of cartitems">
+      <table>
+        <tr>
+          <td><label>Name:</label></td>
+          <td>{{item.name}}</td>
+          <td>
+            <button class="btn-danger" (click)="removeItem(id,item.name)">Remove</button>
+          </td>
+        </tr>
+        <tr>
+          <td><label>Price:</label></td>
+          <td>{{item.price}}</td>
+        </tr>
+      </table>
+      <hr>
+    </div>
+  </div>
+
+  <div class="container-fluid" id="two">Orders:
+    <hr>
+    <div class="container-item">
+      <div class="container-item" *ngFor="let order of orders"> 
+        <table> <tr> <td><label>Name:</label></td> <td>{{order.name}}</td> </tr> 
+            <tr> <td><label>Price:</label></td> <td>{{order.price | currency:'USD'}}</td> </tr> 
+            <tr> <td><label>Discount:</label></td> <td>{{order.discount}}%</td> </tr> 
+        </table> 
+        <hr> 
+    </div> 
+    <div class="order-summary"> <p><strong>Total Price:</strong> {{ getTotalPrice() | currency:'USD' }}</p> 
+        <p><strong>Total Discount:</strong> {{ getTotalDiscount() | number:'1.0-2' }}%</p> 
+        <p><strong>Final Payable:</strong> {{ getFinalAmount() | currency:'USD' }}</p> 
+        <button class="btn btn-success" (click)="placeOrder()">Place Order</button> 
+    </div>
+    </div>
+    </div>
+</div>

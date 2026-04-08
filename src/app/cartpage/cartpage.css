@@ -1,0 +1,11 @@
+.container{
+    display:flex;
+    flex-direction:row;
+}
+#one{
+    flex:2;
+}
+
+#two{
+    flex:1;
+}

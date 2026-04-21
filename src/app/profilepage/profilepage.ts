@@ -4,7 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Products } from '../services/products';
 import { CommonModule } from '@angular/common';
 import { Authservice } from '../services/authservice';
-import { UserInt } from '../interfaces/user-int';
+import {UserRes} from '../interfaces/UserRes'
+import { UserReq } from '../interfaces/UserReq';
+import {ProductRequest} from '../interfaces/ProductRequest';
+
 
 @Component({
   selector: 'app-profilepage',
@@ -14,11 +17,22 @@ import { UserInt } from '../interfaces/user-int';
 })
 export class Profilepage implements OnInit{
   isUserLogged:boolean= false;
-  uname: string = sessionStorage.getItem("username") || "";
+  uname: string = sessionStorage.getItem("username") || ""; 
   uid: string = sessionStorage.getItem("id") || ""; 
+  email: string = sessionStorage.getItem("email") || "";
   password:string="new password..";
-  // email:string="";
+  activeTab:string = 'details';
   orders:ProdInt[]=[];
+  myAddedProducts: ProdInt[] = [];
+
+  pname:string="";
+  pprice:string="";
+  pdescription:string="";
+  pbrand:string="";
+  prating:string="";
+  pimage:string="https://images.pexels.com/photos/6568665/pexels-photo-6568665.jpeg"; 
+  pdiscount:number=0;
+  
   constructor(private prodserv:Products,private auth :Authservice){}
 
   ngOnInit(): void {
@@ -28,45 +42,106 @@ export class Profilepage implements OnInit{
     }else{
       this.isUserLogged=true;
       this.getorders();
+      this.getMyAddedProducts();
     }
   }
-
-  getorders(){
-    this.prodserv.getOrders(this.uid).subscribe({
-      next : (res) =>{ 
-        this.orders = Array.isArray(res) ? res : [res];
-        console.log("printing orders"+this.orders)
+  getMyAddedProducts(){
+    this.prodserv.getMyProducts().subscribe({
+      next : (res) =>{
+        this.myAddedProducts = [...res];
       },
-      error : (err) => console.log(err),
-      complete : () => console.log("orders loaded") 
+      error : (err) => {
+        console.error("Failed to fetch my added products:", err);
+      },
+      complete : () => {
+        console.log("getMyAddedProducts completed");
+      }
+    });
+  }
+  getorders(){
+    console.log("[DEBUG] getorders() called");
+    this.prodserv.getOrders().subscribe({
+      next : (res) =>{ 
+        console.log("[DEBUG] API response received:", res);
+        console.log("[DEBUG] Response length:", res.length);
+        this.orders = res.flatMap(order => {
+          const items = order.items || order.items || [];
+          console.log("[DEBUG] Processing order:", order);
+          console.log("[DEBUG] Order items:", items);
+          return Array.isArray(items) ? items : [];
+        });
+        console.log("[DEBUG] Final orders array:", this.orders);
+        console.log("[DEBUG] Orders count:", this.orders.length);
+      },
+      error : (err) => {
+        console.log("[DEBUG] Error occurred:", err);
+      },
+      complete : () => {
+        console.log("[DEBUG] orders subscription completed");
+      }
     })
   }
 
   changedata(){
-
-  this.auth.getUserById(this.uid).subscribe({
-      next: (res) =>{
-      const user : UserInt = {
-      id:res.id,
-      username:this.uname,
-      email:res.email, 
+    const data : UserReq= {
+      name:this.uname,  
+      email:this.email,
       password:this.password
-      };
+    }
 
-      this.auth.updateUser(user).subscribe({  
-        next: () => {
+  this.auth.updateUser(this.uid,data).subscribe({
+     next: (res) => {
             alert("User details updated successfully");
-            sessionStorage.setItem("username", user.username);
-            sessionStorage.setItem("id",user.id);
+            localStorage.setItem("username", res.name);
+            localStorage.setItem("email", res.email);
             },
         error: (err) => {
             console.error("Update failed:", err);
             alert("Failed to update user details. Please try again.");
             }
       });
-    },
-  error:(err) => console.log("Error to get userdetail "+err)
-      });
+
   }
 
-} 
+  addproduct(){
+    const user : UserRes={
+      id:this.uid,
+      name:this.uname,
+      email:this.email
+    }
+    const data : ProductRequest = {
+      user:user,
+      name:this.pname,
+      price:parseFloat(this.pprice),
+      Description:this.pdescription,
+      brand:this.pbrand,
+      rating:parseFloat(this.prating),
+      image:this.pimage,
+      discount:this.pdiscount,
+      availability:true
+    }
+
+    this.prodserv.addProduct(data).subscribe({
+      next: (res:any) => {
+        alert("Product added successfully");
+        const newProduct = res as ProdInt;
+        if (newProduct?.id) {
+          this.myAddedProducts.unshift(newProduct);
+        }
+        // Clear the input fields
+        this.pname = "";
+        this.pprice = "";
+        this.pdescription = "";
+        this.pbrand = "";
+        this.prating = "";
+        this.pimage = "";
+      },
+      error: (err) => {
+        console.error("Failed to add product:", err);
+        alert("Failed to add product. Please try again.");
+      },
+      complete:() =>{ console.log('[DEBUG] addProduct completed'); }
+    });
+
+  }
+}

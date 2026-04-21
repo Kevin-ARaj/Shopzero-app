@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Products } from '../services/products';
 import { CommonModule } from '@angular/common';
 import { ProdInt } from '../interfaces/prod-int';
-import { Router, RouterLink} from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Authservice } from '../services/authservice';
 
@@ -17,26 +17,24 @@ export class Homepage implements OnInit{
 
   allProds:ProdInt[]=[];
   filteredProds: ProdInt[] = []; 
-  searchInput:string="";
+  searchInput:string="";  
+  quantity:number=1;
   isUserLogged:boolean= false;
   username:string= sessionStorage.getItem("username") || "";
   id:string = sessionStorage.getItem("id")||"";
   
   private http = inject(HttpClient);
-  constructor(private prodservice:Products,private auth:Authservice,private router:Router){}
+  constructor(private prodservice:Products,private auth:Authservice){}
   
-
 
   ngOnInit(): void {
     this.getAllproducts();
-  
-  //checking if username exists
-  if (!this.username) {
-    this.isUserLogged = false;
-  }else{
-    this.isUserLogged= true;
-  }
-    
+
+    if (!this.username) {
+      this.isUserLogged = false;
+    } else {
+      this.isUserLogged = true;
+    }
   }
 
   getAllproducts(){
@@ -48,30 +46,29 @@ export class Homepage implements OnInit{
       error: (err) => {console.log("failed to load",err)},
       complete: () => {console.log(JSON.stringify(this.allProds))}
     })
-    
   }
-
 
   filterProducts() {
-  const term = this.searchInput.trim().toLowerCase();
-  if (!term) {
-    this.filteredProds = this.allProds;
-    return;
-  }
-  this.filteredProds = this.allProds.filter(prod =>
-    prod.name.toLowerCase().includes(term)
+    const term = this.searchInput.trim().toLowerCase();
+    if (!term) {
+      this.filteredProds = this.allProds;
+      return;
+    }
+    this.filteredProds = this.allProds.filter(prod =>
+      prod.name.toLowerCase().includes(term)
     );
   }
   
-  addcart(prod:ProdInt){
-    this.prodservice.addToCart(this.id,prod).subscribe({
+  addcart(id:string){
+    this.prodservice.addToCart(id,this.quantity).subscribe({
       next:()=>console.log("item added to cart"),
-      error:(err) =>console.log(err),
+      error:(err) => {  console.log(err);
+                        alert("Please login to add items to cart")
+                      },
       complete:()=>  alert("item added to cart")
     })
   }
 
-  
   logout(){
     sessionStorage.clear();
     this.username="";
@@ -79,5 +76,5 @@ export class Homepage implements OnInit{
     location.reload();
   }
 
-
 }
+

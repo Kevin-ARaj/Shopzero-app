@@ -1,0 +1,9 @@
+
+completed
+---------------
+home page
+login page 
+profile page
+cart page
+
+run test needed - delete tables from neon before running

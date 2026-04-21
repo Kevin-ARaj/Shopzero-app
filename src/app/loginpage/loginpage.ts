@@ -4,8 +4,10 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Authservice } from '../services/authservice';
-import { UserInt } from '../interfaces/user-int';
+import { LogReq } from '../interfaces/LogReq';
 import { Router } from '@angular/router';
+import { LogRes } from '../interfaces/LogRes';
+import { UserReq } from '../interfaces/UserReq';
 
 @Component({
   selector: 'app-loginpage',
@@ -45,20 +47,20 @@ export class Loginpage {
       const password = this.loginform.get('password')?.value;
       // console.log(this.loginform.get('username')?.value,this.loginform.get('email')?.value) - works good
       if (this.temp === "login") {
-        this.loginUser(username, password);
+        const userdet:LogReq = {
+          email,
+          password
+        }
+        this.loginUser(userdet);
       } else if (this.temp === "signin"){
         this.registerUser(username, email, password);
       }
     }
   }
-  loginUser(username: string, password: string) { 
-    this.authservice.login(username, password).subscribe({ 
+  loginUser(userdet:LogReq) { 
+    this.authservice.login(userdet).subscribe({ 
       next: (user) => { 
-        if (user.length > 0) { 
-          this.handleLoginSuccess(user[0]); 
-          } else { 
-           alert("Invalid username or password"); 
-          }
+          this.handleLoginSuccess(user);   
         },
       error: () => { 
         alert("Login failed. Please check your credentials."); 
@@ -66,17 +68,16 @@ export class Loginpage {
     }); 
   }
   registerUser(name: string, email: string, password: string) {
-    const newUser: UserInt = {
-      id: Date.now().toString(), // Generates unique ID
-      username:name,
+    const newUser: UserReq = {
+      name,
       email,
       password
     };
 
     this.authservice.register(newUser).subscribe({
       next: (user) => {
-        this.handleLoginSuccess(user);
         alert("Registration successful! You are now logged in.");
+        this.handleLoginSuccess(user);
       },
       error: (err) => {
         alert("Registration failed. Please try again.");
@@ -84,9 +85,11 @@ export class Loginpage {
     });
   }
 
-  handleLoginSuccess(user: UserInt) {
-    sessionStorage.setItem("username",user.username);
+  handleLoginSuccess(user: LogRes) {
     sessionStorage.setItem("id",user.id);
+    sessionStorage.setItem("username",user.name);
+    sessionStorage.setItem("email",user.email);
+    sessionStorage.setItem("token",user.token);
     this.router.navigateByUrl("homepage");
   }
 }

@@ -9,5 +9,5 @@ export const routes: Routes = [
     {path:'profilepage',component:Profilepage},
     {path:'cartpage',component:Cartpage},
     {path:'loginpage',component:Loginpage},
-    { path: '**', redirectTo: '' } // add a component to show error message
+    { path: '**', redirectTo: '' }
 ];

@@ -1,18 +1,18 @@
 <div class="container m-3">
   <div class="container-fluid" id="one">Items:
     <hr>
-    <div class="container-item" *ngFor="let item of cartitems">
+    <div class="container-item" *ngFor="let item of totalcart">
       <table>
         <tr>
           <td><label>Name:</label></td>
-          <td>{{item.name}}</td>
+          <td>{{item.product.name}}</td>
           <td>
-            <button class="btn-danger" (click)="removeItem(id,item.name)">Remove</button>
+            <button class="btn-danger" (click)="removeItem(item.id)">Remove</button>
           </td>
         </tr>
         <tr>
           <td><label>Price:</label></td>
-          <td>{{item.price}}</td>
+          <td>{{item.product.price}}</td>
         </tr>
       </table>
       <hr>

@@ -1,15 +1,15 @@
 <!-- User greeting or login -->
- <div class="container d-flex ms-auto">
-    <div *ngIf="isUserLogged; else loginTemplate">
+<div class="container d-flex ms-auto">
+  <div *ngIf="isUserLogged; else loginTemplate">
     <h3>Welcome, {{username}}</h3>
     &nbsp;
     <a class="btn btn-danger" (click)="logout()">Logout</a>
-    </div>
-    <form class="d-flex ms-auto" (ngSubmit)="filterProducts()">
-        <input type="text" class="form-control-palaintext" [(ngModel)]="searchInput" name="search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
- </div>
+  </div>
+  <form class="d-flex ms-auto" (ngSubmit)="filterProducts()">
+    <input type="text" class="form-control-palaintext" [(ngModel)]="searchInput" name="search" placeholder="Search products...">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+</div>
 
 
 <ng-template #loginTemplate>
@@ -34,7 +34,8 @@
           <p class="card-text">{{ prod.description }}</p>
           <p class="card-text">{{ prod.brand }}</p>
           <p class="card-text">{{ prod.rating }}</p>
-          <button class="btn btn-success" (click)="addcart(prod)">Add to cart</button>
+          <input type="number" class="form-control mb-2" [(ngModel)]="quantity"  min="1" placeholder="Quantity">
+          <button class="btn btn-success" (click)="addcart(prod.id)">Add to cart</button>
         </div>
       </div>
     </div>

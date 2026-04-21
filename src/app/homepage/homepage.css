@@ -2,3 +2,58 @@
   border: 1px solid black;
   color: black;
 }
+
+.container.d-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.container.d-flex h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.form-control-palaintext {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  color: #212529;
+  min-width: 180px;
+}
+
+.form-control-palaintext::placeholder {
+  color: #6c757d;
+}
+
+.form-control-palaintext:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-outline-success {
+  border-color: #198754;
+  color: #198754;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-success:hover {
+  background-color: #198754;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .container.d-flex {
+    align-items: stretch;
+  }
+  .form-control-palaintext {
+    width: 100%;
+  }
+}
+

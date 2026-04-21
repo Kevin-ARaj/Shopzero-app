@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ProdInt } from '../interfaces/prod-int';
-import { Products } from '../services/products';
+import { deletedResponse, Products } from '../services/products';
 import { CommonModule } from '@angular/common';
+import { CartInt } from '../interfaces/cart-int';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cartpage',
@@ -12,28 +14,35 @@ import { CommonModule } from '@angular/common';
 export class Cartpage implements OnInit{
   orders: ProdInt[] = [];
   cartitems: ProdInt[] = [];
+  totalcart: CartInt[] = [];
   id:any=sessionStorage.getItem("id")||"";
-  constructor(private prodserv : Products){}
+  constructor(
+    private prodserv : Products,
+    private router: Router){}
 
   ngOnInit(): void {
-    this.getCartItems(this.id);
+    this.getCartItems();
   }
 
-  getCartItems(id:any){
-    return this.prodserv.getCartItems(id).subscribe({
+  getCartItems(){
+    return this.prodserv.getCartItems().subscribe({
       next:(res) => {
-        this.cartitems = res,
-        this.orders = [...res]
+        this.totalcart = res;
+         this.cartitems = res.map(item => item.product);
+         this.orders = [...this.cartitems]
       },
       error:(err)=> console.log(err),
       complete:()=> console.log("fetched cart items")
     })
   }
 
-  removeItem(id:any,productName: string) { 
-    this.prodserv.removeFromCart(id, productName).subscribe(() => { 
-      this.getCartItems(this.id);
-    }); 
+  removeItem(id:string){ 
+    this.prodserv.removeFromCart(id).subscribe({
+      next:(res: deletedResponse)=> console.log(res.message),
+      error:(err) => console.log(err),
+      complete: () => { 
+      this.getCartItems();
+    }}); 
   }
   getTotalPrice(): number { 
     return this.orders.reduce((sum, item) => sum + item.price, 0); 
@@ -48,23 +57,19 @@ export class Cartpage implements OnInit{
       return sum + discountedPrice; }, 0); 
     }
   
-  placeOrder() { 
-    this.cartitems.forEach(item => { 
-      this.addToOrders(this.id, item); 
-    }); 
+  placeOrder() {
+      this.addToOrders(); 
     this.cartitems = []; // clear cart after placing order 
     this.orders= [] 
-  } // Remove item from cart 
+    this.totalcart = [];
+  } 
   
   
-  addToOrders(id:any, product: ProdInt) { 
-    this.prodserv.addToOrders(id, product).subscribe(order => { 
-      this.orders.push(order); 
-      location.reload();
-      this.prodserv.clearCart(this.id).subscribe({
-        next:()=>console.log("cart cleared"),
-        error:(err) => console.log(err)
-      })
+  addToOrders() { 
+    this.prodserv.addToOrders().subscribe({ 
+      next: () => console.log("order placed"),
+      error: (err) => console.log(err),
+      complete: () => { this.router.navigate(['/profile']); }
     }); 
   }
 }

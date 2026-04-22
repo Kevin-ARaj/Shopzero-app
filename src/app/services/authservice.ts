@@ -6,7 +6,7 @@ import { UserRes } from '../interfaces/UserRes';
 import { LogReq } from '../interfaces/LogReq';
 import { LogRes } from '../interfaces/LogRes';
 import { UserReq } from '../interfaces/UserReq';
-
+import { deletedResponse } from './products';
 @Injectable({
   providedIn: 'root',
 })
@@ -37,5 +37,19 @@ export class Authservice {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({'Authorization' : `Bearer ${token}`,'Content-Type': 'application/json'});
     return this.http.get<UserRes>(`${this.apiUrl}/user/${id}`,{headers});
+  }
+
+  //get all users - admin dashboard
+  getAllUsers(): Observable<UserInt[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({'Authorization' : `Bearer ${token}`,'Content-Type': 'application/json'});
+    return this.http.get<UserInt[]>(`${this.apiUrl}/user`,{headers});
+  }
+
+  // Delete user - admin dashboard
+  deleteUser(id: string): Observable<deletedResponse> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({'Authorization' : `Bearer ${token}`,'Content-Type': 'application/json'});
+    return this.http.delete<deletedResponse>(`${this.apiUrl}/user/${id}`, { headers });
   }
 }

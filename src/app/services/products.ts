@@ -5,6 +5,7 @@ import { ProdInt } from '../interfaces/prod-int';
 import { CartInt } from '../interfaces/cart-int';
 import {OrderInt} from '../interfaces/orders-int';
 import {ProductRequest} from '../interfaces/ProductRequest';
+import { OrderResponse } from '../interfaces/OrderResponse';
 
 export interface deletedResponse{
   message:string
@@ -40,10 +41,10 @@ export class Products {
     }
 
   // Get user's orders
-  getOrders(): Observable<OrderInt[]> {
+  getOrders(): Observable<OrderResponse[]> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({'Authorization' : `Bearer ${token}`,'Content-Type': 'application/json'});
-    return this.http.get<OrderInt[]>(`${this.apiUrl}/orders`,{headers});
+    return this.http.get<OrderResponse[]>(`${this.apiUrl}/orders`,{headers});
   }
 
   // Add item to cart 
@@ -74,10 +75,24 @@ export class Products {
       return this.http.post<OrderInt>(`${this.apiUrl}/orders`, null , { headers });
   }
 
-  // Clear cart after order placement
-  clearCart(id:any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/cart/${id}`, { items: [] }).pipe(
-    );
+  // // Clear cart after order placement - not needed anymore because i am clearing cart after order placement in backend
+  // clearCart(id:any): Observable<any> {
+  //   return this.http.patch(`s${this.apiUrl}/cart/${id}`, { items: [] }).pipe(
+  //   );
+  // }
+
+  // Update product with only changed fields
+  updateProduct(productId: string, changedFields: any): Observable<ProdInt> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({'Authorization' : `Bearer ${token}`,'Content-Type': 'application/json'});
+    return this.http.put<ProdInt>(`${this.apiUrl}/products/${productId}`, changedFields, { headers });
+  }
+
+  //delete a product
+  deleteProduct(productId: string): Observable<deletedResponse> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({'Authorization' : `Bearer ${token}`,'Content-Type': 'application/json'});
+    return this.http.delete<deletedResponse>(`${this.apiUrl}/products/${productId}`, { headers });
   }
 
  }

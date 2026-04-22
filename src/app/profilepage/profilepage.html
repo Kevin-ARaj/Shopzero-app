@@ -2,12 +2,11 @@
     <div class="profile-header">
         <div>
             <h2>Profile Dashboard</h2>
-            <p>Manage your account, orders, and the products you've added.</p>
+            <p>Manage your account</p>
         </div>
         <div class="tabs">
             <button type="button" [class.active]="activeTab === 'details'" (click)="activeTab='details'">User details</button>
             <button type="button" [class.active]="activeTab === 'orders'" (click)="activeTab='orders'">Ordered items</button>
-            <button type="button" [class.active]="activeTab === 'my-added'" (click)="activeTab='my-added'">My added products</button>
         </div>
     </div>
 
@@ -19,27 +18,20 @@
                     <div class="contain"><h3 id="detail">Name :</h3><input type="text" [(ngModel)]="uname"></div>
                     <div class="contain"><h3 id="detail">Email :</h3><input type="text" [(ngModel)]="email"></div>
                     <div class="contain"><h3 id="detail">Password :</h3><input type="text" [(ngModel)]="password"></div>
-                    <div class="contain"><button id="change-button" (click)="changedata()">Save changes</button></div>
+                    <div class="contain"><button id="change-button" (click)="changeData()">Save changes</button></div>
                 </section>
 
-                <section class="panel-card">
-                    <h3>Add a new product</h3>
-                    <div class="contain"><h3 id="detail">Name :</h3><input type="text" [(ngModel)]="pname"></div>
-                    <div class="contain"><h3 id="detail">Price :</h3><input type="text" [(ngModel)]="pprice"></div>
-                    <div class="contain"><h3 id="detail">Description :</h3><input type="text" [(ngModel)]="pdescription"></div>
-                    <div class="contain"><h3 id="detail">Brand :</h3><input type="text" [(ngModel)]="pbrand"></div>
-                    <div class="contain"><h3 id="detail">Rating :</h3><input type="text" [(ngModel)]="prating"></div>
-                    <div class="contain"><h3 id="detail">Image URL :</h3><input type="text" [(ngModel)]="pimage"></div>
-                    <div class="contain"><h3 id="detail">Discount :</h3><input type="number" [(ngModel)]="pdiscount"></div>
-                    <div class="contain"><button id="change-button" (click)="addproduct()">Add Product</button></div>
-                </section>
+                
             </div>
         </div>
 
-        <div *ngIf="activeTab === 'orders'" class="tab-panel">
-            <h3>Ordered items</h3>
-            <div *ngIf="orders.length > 0; else noOrders" class="cards-grid">
-                <div class="card-box" *ngFor="let prod of orders">
+                <div *ngIf="activeTab === 'orders'" class="tab-panel">
+                        <div class="orders-header" style="display:flex;align-items:center;justify-content:space-between;">
+                            <h3 style="margin:0">Ordered items</h3>
+                            <button class="btn-refresh" (click)="getOrders()" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer">Refresh Orders</button>
+                        </div>
+            <div *ngIf="orderedProds.length > 0; else noOrders" class="cards-grid">
+                <div class="card-box" *ngFor="let prod of orderedProds">
                     <div class="card h-100 shadow-sm custom-container">
                         <img [src]="prod?.image || 'https://via.placeholder.com/150'" class="card-img-top" alt="{{prod?.name || 'Product'}}" style="height: 140px; object-fit: cover;">
                         <div class="card-body">
@@ -48,7 +40,7 @@
                             <p class="card-text">{{ prod?.description || 'N/A' }}</p>
                             <p class="card-text">{{ prod?.brand || 'N/A' }}</p>
                             <p class="card-text">Rating: {{ prod?.rating || '0' }}</p>
-                            <button class="btn btn-success">Order Again</button>
+                            <button class="btn btn-success" (click)="addcart(prod?.id || '')">Add to cart again</button>
                         </div>
                     </div>
                 </div>
@@ -58,26 +50,7 @@
             </ng-template>
         </div>
 
-        <div *ngIf="activeTab === 'my-added'" class="tab-panel">
-            <h3>Products you added</h3>
-            <div *ngIf="myAddedProducts.length > 0; else noAddedProducts" class="cards-grid">
-                <div class="card-box" *ngFor="let prod of myAddedProducts">
-                    <div class="card h-100 shadow-sm custom-container">
-                        <img [src]="prod?.image || 'https://via.placeholder.com/150'" class="card-img-top" alt="{{prod?.name || 'Product'}}" style="height: 140px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ prod?.name || 'N/A' }}</h5>
-                            <p class="card-text text-success fw-bold">₹{{ prod?.price || '0' }}</p>
-                            <p class="card-text">{{ prod?.description || 'N/A' }}</p>
-                            <p class="card-text">{{ prod?.brand || 'N/A' }}</p>
-                            <p class="card-text">Rating: {{ prod?.rating || '0' }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <ng-template #noAddedProducts>
-                <p class="empty-state">No products added yet. Add one from the first tab.</p>
-            </ng-template>
-        </div>
+        
     </div>
 
     <ng-template #loginPrompt>

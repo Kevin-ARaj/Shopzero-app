@@ -90,7 +90,13 @@ export class Loginpage {
     sessionStorage.setItem("username",user.name);
     sessionStorage.setItem("email",user.email);
     sessionStorage.setItem("token",user.token);
-    this.router.navigateByUrl("homepage");
+    sessionStorage.setItem("role",user.role);
+    if(user.role == "USER"){
+      this.router.navigateByUrl("homepage");
+    }else if(user.role == "ADMIN"){ 
+      this.router.navigateByUrl("admin-dashboard");
+    }
+    
   }
 }
 
